@@ -7,15 +7,17 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3001/api/login', { email, password })
+    axios.post('http://localhost:3001/api/auth/login', { email, password })
       .then(response => {
         console.log(response.data);
         if (response.data.message === 'Login successful') {
+          localStorage.setItem("token", response.data.token);
           alert('Login successful!');
         }
       })
       .catch(error => {
         console.log(error);
+        alert(error.response.data.message);
       });
   };
 
