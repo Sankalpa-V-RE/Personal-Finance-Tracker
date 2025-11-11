@@ -17,6 +17,10 @@ mongoose.connect(mongoURI)
 
 app.use("/api/auth", authRoutes);
 
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
 });

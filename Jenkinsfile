@@ -57,7 +57,7 @@ pipeline {
                 
                 sh 'echo "Testing backend service..."'
                 // Check if the backend port is responding
-                sh 'curl --fail http://localhost:3001/ || exit 1'
+                sh 'curl --fail http://localhost:3001/api/health || exit 1'
                 
                 sh 'echo "Testing frontend service..."'
                 // Check if the frontend port is responding
@@ -65,7 +65,7 @@ pipeline {
             }
         }
 
-        stage('Push Images to Registry') {
+        /*stage('Push Images to Registry') {
             // This stage prepares your images for deployment.
             // It only runs if the build is on the 'main' branch.
             when {
@@ -80,7 +80,7 @@ pipeline {
                 // Tell Docker Compose to push the 'backend' and 'frontend' images
                 sh "DOCKER_REGISTRY_USER=${DOCKER_REGISTRY_USER} DOCKER_REPO_NAME=${DOCKER_REPO_NAME} IMAGE_TAG=${IMAGE_TAG} docker-compose push"
             }
-        }
+        }*/
     }
 
     // 4. Post-Build Actions
