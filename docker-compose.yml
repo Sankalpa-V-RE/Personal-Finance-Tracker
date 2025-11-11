@@ -12,6 +12,7 @@ services:
 
   backend:
     build: ./Fullstack-Backend
+    image: ${DOCKER_REGISTRY_USER:-my-docker-user}/${DOCKER_REPO_NAME:-my-app}:backend-${IMAGE_TAG:-latest}
     container_name: backend
     restart: always
     ports:
@@ -25,6 +26,7 @@ services:
     build:
       context: ./Fullstack-Frontend
       dockerfile: Dockerfile
+    image: ${DOCKER_REGISTRY_USER:-my-docker-user}/${DOCKER_REPO_NAME:-my-app}:frontend-${IMAGE_TAG:-latest}
     container_name: frontend
     restart: always
     ports:
