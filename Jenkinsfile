@@ -11,7 +11,7 @@ pipeline {
         //    It will then create TWO new variables in the environment:
         //    - DOCKER_CREDS_USR (containing the username)
         //    - DOCKER_CREDS_PSW (containing the password)
-        DOCKER_CREDS = credentials('dockerhub-credentials')
+        DOCKER_CREDS = credentials('docker-hub-credentials')
 
         // 2. Now, we create the DOCKER_REGISTRY_USER variable
         //    by copying the value from the username variable (DOCKER_CREDS_USR)
@@ -64,7 +64,7 @@ pipeline {
             steps {
                 // We use the full DOCKER_CREDS variable here, which contains
                 // both username and password for the login command.
-                withCredentials([usernamePassword(credentialsId: 'your-dockerhub-credentials-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                 }
                 
