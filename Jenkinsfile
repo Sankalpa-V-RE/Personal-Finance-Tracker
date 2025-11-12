@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        stage('Push Images to Registry') {
+        /*stage('Push Images to Registry') {
             when {
                 branch 'main'
             }
@@ -70,7 +70,7 @@ pipeline {
                 
                 sh "DOCKER_REGISTRY_USER=${DOCKER_REGISTRY_USER} DOCKER_REPO_NAME=${DOCKER_REPO_NAME} IMAGE_TAG=${IMAGE_TAG} docker-compose push"
             }
-        }
+        }*/
     }
 
     // 4. Post-Build Actions
