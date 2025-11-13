@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 function SignUp() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [name, setName] = useState();
-
+    const navigate = useNavigate();
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post('http://localhost:3001/api/auth/signup', { email, password, name })
@@ -14,6 +15,7 @@ function SignUp() {
                 if (response.data.message === 'SignUp successful') {
                     localStorage.setItem("token", response.data.token);
                     alert('SignUp successful!');
+                    navigate('/dashboard');
                 }
             })
             .catch(error => {

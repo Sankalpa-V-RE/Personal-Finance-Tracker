@@ -1,10 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post('http://localhost:3001/api/auth/login', { email, password })
@@ -13,6 +14,7 @@ function Login() {
         if (response.data.message === 'Login successful') {
           localStorage.setItem("token", response.data.token);
           alert('Login successful!');
+          navigate('/dashboard');
         }
       })
       .catch(error => {

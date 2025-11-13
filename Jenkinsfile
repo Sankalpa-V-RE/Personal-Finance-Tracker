@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        TEST_MODE = 'true' // 👈 toggle this off later
+        TEST_MODE = 'false' // enable test mode (skip pushing images)
         FRONTEND_IMAGE = "vihangasankalpa/piggybank-frontend:latest"
         BACKEND_IMAGE = "vihangasankalpa/piggybank-backend:latest"
     }
@@ -28,7 +28,7 @@ pipeline {
 
         stage('Push Images') {
             when {
-                expression { return TEST_MODE != 'true' } // 👈 skip when test mode is on
+                expression { return TEST_MODE != 'true' } // Only push if not in test mode
             }
             steps {
                 withCredentials([usernamePassword(
