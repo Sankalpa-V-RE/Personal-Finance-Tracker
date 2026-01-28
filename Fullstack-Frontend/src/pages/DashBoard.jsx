@@ -6,23 +6,10 @@ import {
 import {
   Wallet, TrendingUp, TrendingDown, DollarSign, Calendar, Bell, Search, Menu, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
+import Sidebar from '../components/Sidebar';
 
 // --- Mock Data ---
-const monthlyData = [
-  { name: 'Jan', income: 4000, expense: 2400 },
-  { name: 'Feb', income: 3000, expense: 1398 },
-  { name: 'Mar', income: 2000, expense: 9800 }, // High expense month
-  { name: 'Apr', income: 2780, expense: 3908 },
-  { name: 'May', income: 1890, expense: 4800 },
-  { name: 'Jun', income: 2390, expense: 3800 },
-];
-
-const categoryData = [
-  { name: 'Housing', value: 1200, color: '#3b82f6' }, // Blue
-  { name: 'Food', value: 450, color: '#10b981' },    // Green
-  { name: 'Transport', value: 300, color: '#f59e0b' }, // Amber
-  { name: 'Entertainment', value: 200, color: '#ef4444' }, // Red
-];
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1'];
 
 
 
@@ -31,6 +18,8 @@ const Dashboard = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || { name: 'User', email: 'user@example.com' });
   const [transactions, setTransactions] = useState([]);
   const [summary, setSummary] = useState({ totalBalance: 0, income: 0, expense: 0 });
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
 
   useEffect(() => {
     if (user && user.id) {
@@ -51,44 +40,67 @@ const Dashboard = () => {
             }
           });
           setSummary({ totalBalance: total, income: inc, expense: exp });
+          processChartData(data);
         })
         .catch(err => console.error(err));
     }
+
+    // Check for recurring transactions lazy load
+    if (user && user.id) {
+      axios.post('http://localhost:3001/api/transactions/recurring/process', { userId: user.id })
+        .then(res => {
+          if (res.data.count > 0) {
+            console.log("Processed " + res.data.count + " recurring transactions.");
+            // Optional: reload transactions if we want to show them immediately, but user might not notice.
+          }
+        })
+        .catch(err => console.error("Error processing recurring:", err));
+    }
   }, [user]);
+
+  const processChartData = (data) => {
+    // 1. Process Monthly Data
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const currentYear = new Date().getFullYear();
+    const monthlyMap = new Map();
+
+    // Initialize last 6 months
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const key = `${monthNames[d.getMonth()]}`;
+      monthlyMap.set(key, { name: key, income: 0, expense: 0 });
+    }
+
+    data.forEach(t => {
+      const d = new Date(t.date);
+      const key = monthNames[d.getMonth()];
+      if (monthlyMap.has(key)) { // Only track if within our view window
+        const entry = monthlyMap.get(key);
+        if (t.type === 'income') entry.income += t.amount;
+        else entry.expense += t.amount;
+      }
+    });
+    setMonthlyData(Array.from(monthlyMap.values()));
+
+    // 2. Process Category Data (Expenses only)
+    const catMap = new Map();
+    data.filter(t => t.type === 'expense').forEach(t => {
+      const val = catMap.get(t.category) || 0;
+      catMap.set(t.category, val + t.amount);
+    });
+
+    const catArray = Array.from(catMap).map(([name, value], index) => ({
+      name, value, color: COLORS[index % COLORS.length]
+    }));
+    setCategoryData(catArray);
+  };
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-gray-800 font-sans">
 
       {/* --- Sidebar (Mobile responsive) --- */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="h-full flex flex-col">
-          <div className="flex items-center justify-center h-20 border-b border-gray-100">
-            <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
-              <Wallet className="w-8 h-8" /> Piggy Bank
-            </h1>
-          </div>
-
-          <nav className="flex-1 px-4 py-6 space-y-2">
-            {['Dashboard', 'Transactions', 'Budget', 'Goals', 'Reports'].map((item, index) => (
-              <a key={item} href="#" className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${index === 0 ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}>
-                {item}
-              </a>
-            ))}
-          </nav>
-
-          <div className="p-4 border-t border-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{user.name}</p>
-                <p className="text-xs text-gray-500">Free Plan</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
+      <Sidebar sidebarOpen={sidebarOpen} user={user} activeItem="Dashboard" />
 
       {/* --- Main Content --- */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -214,7 +226,7 @@ const Dashboard = () => {
                   </ResponsiveContainer>
                   {/* Center Text for Pie */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-2xl font-bold text-gray-800">$2.1k</span>
+                    <span className="text-2xl font-bold text-gray-800">${summary.expense}</span>
                     <span className="text-xs text-gray-500">Total Spent</span>
                   </div>
                 </div>
@@ -244,7 +256,6 @@ const Dashboard = () => {
                     <tr>
                       <th className="px-6 py-3 font-medium">Transaction</th>
                       <th className="px-6 py-3 font-medium">Date</th>
-                      <th className="px-6 py-3 font-medium">Status</th>
                       <th className="px-6 py-3 font-medium text-right">Amount</th>
                     </tr>
                   </thead>
@@ -253,9 +264,6 @@ const Dashboard = () => {
                       <tr key={tx._id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4 font-medium text-gray-900">{tx.title}</td>
                         <td className="px-6 py-4">{new Date(tx.date).toLocaleDateString()}</td>
-                        <td className="px-6 py-4">
-                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">Completed</span>
-                        </td>
                         <td className={`px-6 py-4 text-right font-bold ${tx.type === 'income' ? 'text-green-600' : 'text-gray-900'}`}>
                           {tx.type === 'income' ? '+' : ''}${Math.abs(tx.amount).toFixed(2)}
                         </td>

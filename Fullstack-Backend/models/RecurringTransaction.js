@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const transactionSchema = new mongoose.Schema({
+const recurringTransactionSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -24,18 +24,10 @@ const transactionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
+    lastProcessedDate: {
         type: Date,
-        default: Date.now
-    },
-    description: {
-        type: String,
-        trim: true
-    },
-    recurringId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'RecurringTransaction'
+        default: null
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+module.exports = mongoose.model('RecurringTransaction', recurringTransactionSchema);
