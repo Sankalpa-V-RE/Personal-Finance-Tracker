@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -23,15 +24,37 @@ const categoryData = [
   { name: 'Entertainment', value: 200, color: '#ef4444' }, // Red
 ];
 
-const recentTransactions = [
-  { id: 1, title: 'Grocery Market', date: 'Today, 10:23 AM', amount: -85.20, type: 'expense' },
-  { id: 2, title: 'Freelance Payment', date: 'Yesterday, 4:00 PM', amount: +1250.00, type: 'income' },
-  { id: 3, title: 'Netflix Subscription', date: 'Nov 10, 2025', amount: -14.99, type: 'expense' },
-  { id: 4, title: 'Electric Bill', date: 'Nov 08, 2025', amount: -120.50, type: 'expense' },
-];
+
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || { name: 'User', email: 'user@example.com' });
+  const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState({ totalBalance: 0, income: 0, expense: 0 });
+
+  useEffect(() => {
+    if (user && user.id) {
+      axios.get(`http://localhost:3001/api/transactions/get/${user.id}`)
+        .then(res => {
+          const data = res.data;
+          setTransactions(data);
+          let total = 0;
+          let inc = 0;
+          let exp = 0;
+          data.forEach(t => {
+            if (t.type === 'income') {
+              total += t.amount;
+              inc += t.amount;
+            } else {
+              total -= t.amount;
+              exp += t.amount;
+            }
+          });
+          setSummary({ totalBalance: total, income: inc, expense: exp });
+        })
+        .catch(err => console.error(err));
+    }
+  }, [user]);
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-gray-800 font-sans">
@@ -41,7 +64,7 @@ const Dashboard = () => {
         <div className="h-full flex flex-col">
           <div className="flex items-center justify-center h-20 border-b border-gray-100">
             <h1 className="text-2xl font-bold text-blue-600 flex items-center gap-2">
-              <Wallet className="w-8 h-8" /> FinTrack
+              <Wallet className="w-8 h-8" /> Piggy Bank
             </h1>
           </div>
 
@@ -55,9 +78,11 @@ const Dashboard = () => {
 
           <div className="p-4 border-t border-gray-100">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">JD</div>
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
               <div>
-                <p className="text-sm font-semibold">John Doe</p>
+                <p className="text-sm font-semibold">{user.name}</p>
                 <p className="text-xs text-gray-500">Free Plan</p>
               </div>
             </div>
@@ -100,7 +125,7 @@ const Dashboard = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Total Balance</p>
-                    <h3 className="text-3xl font-bold text-gray-900">$24,562.00</h3>
+                    <h3 className="text-3xl font-bold text-gray-900">${summary.totalBalance.toFixed(2)}</h3>
                   </div>
                   <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
                     <DollarSign className="w-6 h-6" />
@@ -117,7 +142,7 @@ const Dashboard = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Monthly Income</p>
-                    <h3 className="text-3xl font-bold text-gray-900">$4,250.00</h3>
+                    <h3 className="text-3xl font-bold text-gray-900">${summary.income.toFixed(2)}</h3>
                   </div>
                   <div className="p-2 bg-green-50 rounded-lg text-green-600">
                     <TrendingUp className="w-6 h-6" />
@@ -134,7 +159,7 @@ const Dashboard = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-sm text-gray-500 mb-1">Monthly Expenses</p>
-                    <h3 className="text-3xl font-bold text-gray-900">$1,840.50</h3>
+                    <h3 className="text-3xl font-bold text-gray-900">${summary.expense.toFixed(2)}</h3>
                   </div>
                   <div className="p-2 bg-red-50 rounded-lg text-red-600">
                     <TrendingDown className="w-6 h-6" />
@@ -224,10 +249,10 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {recentTransactions.map((tx) => (
-                      <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
+                    {transactions.slice(0, 5).map((tx) => (
+                      <tr key={tx._id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4 font-medium text-gray-900">{tx.title}</td>
-                        <td className="px-6 py-4">{tx.date}</td>
+                        <td className="px-6 py-4">{new Date(tx.date).toLocaleDateString()}</td>
                         <td className="px-6 py-4">
                           <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">Completed</span>
                         </td>
@@ -236,6 +261,11 @@ const Dashboard = () => {
                         </td>
                       </tr>
                     ))}
+                    {transactions.length === 0 && (
+                      <tr>
+                        <td colSpan="4" className="px-6 py-4 text-center text-gray-500">No transactions found.</td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

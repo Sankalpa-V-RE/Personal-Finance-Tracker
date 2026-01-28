@@ -19,6 +19,7 @@ function SignUp() {
                 console.log(response.data);
                 if (response.data.message === 'SignUp successful') {
                     localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("user", JSON.stringify(response.data.user));
                     // alert('SignUp successful!');
                     navigate('/dashboard');
                 }
@@ -39,7 +40,7 @@ function SignUp() {
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
                     <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg mb-4">
-                        FT
+                        PB
                     </div>
                 </div>
                 <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
