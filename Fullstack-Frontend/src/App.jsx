@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Dashboard from './pages/DashBoard'
+import Transactions from './pages/Transactions'
 import LandingPage from './pages/LandingPage'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/transactions' element={<Transactions />} />
       </Routes>
     </BrowserRouter>
   )
