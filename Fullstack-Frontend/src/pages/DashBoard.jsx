@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
+import {
+  PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { 
-  Wallet, TrendingUp, TrendingDown, DollarSign, Calendar, Bell, Search, Menu, ArrowUpRight, ArrowDownRight 
+import {
+  Wallet, TrendingUp, TrendingDown, DollarSign, Calendar, Bell, Search, Menu, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 
 // --- Mock Data ---
@@ -34,8 +34,8 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-800 font-sans">
-      
+    <div className="flex h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-gray-800 font-sans">
+
       {/* --- Sidebar (Mobile responsive) --- */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col">
@@ -44,7 +44,7 @@ const Dashboard = () => {
               <Wallet className="w-8 h-8" /> FinTrack
             </h1>
           </div>
-          
+
           <nav className="flex-1 px-4 py-6 space-y-2">
             {['Dashboard', 'Transactions', 'Budget', 'Goals', 'Reports'].map((item, index) => (
               <a key={item} href="#" className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${index === 0 ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}>
@@ -67,13 +67,13 @@ const Dashboard = () => {
 
       {/* --- Main Content --- */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        
+
         {/* Top Header */}
         <header className="h-20 bg-white border-b border-gray-200 flex items-center justify-between px-6 lg:px-8">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-md hover:bg-gray-100">
             <Menu className="w-6 h-6" />
           </button>
-          
+
           <div className="flex items-center bg-gray-100 rounded-lg px-4 py-2 w-full max-w-md mx-4">
             <Search className="w-5 h-5 text-gray-400" />
             <input type="text" placeholder="Search transactions..." className="bg-transparent border-none outline-none ml-2 w-full text-sm" />
@@ -89,7 +89,7 @@ const Dashboard = () => {
 
         {/* Scrollable Dashboard Area */}
         <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-          
+
           <div className="max-w-7xl mx-auto">
             <h2 className="text-2xl font-bold mb-6">Financial Overview</h2>
 
@@ -149,7 +149,7 @@ const Dashboard = () => {
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-              
+
               {/* Bar Chart */}
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
                 <h3 className="text-lg font-bold mb-4">Income vs Expenses</h3>
