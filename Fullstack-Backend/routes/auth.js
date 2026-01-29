@@ -22,6 +22,7 @@ router.post("/signup", async (req, res) => {
 
     res.status(201).json({ message: "SignUp successful", token, user: { id: newUser._id, name: newUser.name, email: newUser.email } });
   } catch (err) {
+    console.error("Signup Error:", err);
     res.status(500).json({ error: err.message });
   }
 });
