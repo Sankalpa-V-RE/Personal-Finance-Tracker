@@ -128,7 +128,6 @@ resource "aws_eip" "lb" {
   domain   = "vpc"
 }
 
-# --- 4. OUTPUTS ---
 output "server_public_ip" {
   value = aws_eip.lb.public_ip
   description = "The public Elastic IP address of the Piggy Bank server"
