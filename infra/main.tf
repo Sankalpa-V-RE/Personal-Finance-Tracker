@@ -27,7 +27,6 @@ resource "aws_security_group" "piggybank_sg" {
   }
 
   # Rule 3: Allow Backend API Access
-  # The Node.js Backend listens on Port 3001
   ingress {
     description = "Backend-API"
     from_port   = 3001
@@ -37,7 +36,6 @@ resource "aws_security_group" "piggybank_sg" {
   }
 
   # Rule 4: Allow Frontend Access
-  # The React Frontend listens on Port 5173
   ingress {
     description = "Frontend-UI"
     from_port   = 5173
@@ -103,7 +101,6 @@ resource "aws_instance" "app_server" {
 
               # 5. Run Jenkins Container
               # - Port 8080: Web UI
-              # - Port 50000: Agent communication
               # - Volume /var/run/docker.sock: Allow Jenkins to use host Docker
               # - Env JAVA_OPTS: Limit memory to 512MB
               docker run -d \
