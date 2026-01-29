@@ -30,7 +30,8 @@ app.use(cors({
 
 //mongoose.connect('mongodb://127.0.0.1:27017/PiggyBank')
 //const mongoURI = process.env.MONGO_URI || 'mongodb://mongo:27017/piggybank';   // when dockerize
-const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/piggybank';  // for local testing
+//const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/piggybank';  // for local testing
+const mongoURI = process.env.MONGO_URI || 'mongodb://mongo:27017/piggybank'; // Default to docker service name
 mongoose.connect(mongoURI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
