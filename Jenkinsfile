@@ -13,37 +13,20 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Deploy (Local)') {
             steps {
                 script {
                     sh '''
+                        echo "Deploying Locally on All-in-One Server..."
+                        # Since Jenkins is on the same server, we just use docker compose
+                        # We use --build to ensure we run the latest code
+                        # DOCKER_REGISTRY_USER and DOCKER_REPO_NAME are environment variables or defaults
                         export DOCKER_REGISTRY_USER="vihangasankalpa"
                         export DOCKER_REPO_NAME="piggybank"
                         export IMAGE_TAG="latest"
-                        docker compose build
+                        
+                        docker compose up -d --build
                     '''
-                }
-            }
-        }
-
-        stage('Push Images') {
-            when {
-                expression { return TEST_MODE != 'true' } // Only push if not in test mode
-            }
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub', 
-                    usernameVariable: 'DOCKERHUB_USER', 
-                    passwordVariable: 'DOCKERHUB_PASS'
-                )]) {
-                    script {
-                        sh '''
-                            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                            docker push vihangasankalpa/piggybank:frontend-latest
-                            docker push vihangasankalpa/piggybank:backend-latest
-                            docker logout
-                        '''
-                    }
                 }
             }
         }
