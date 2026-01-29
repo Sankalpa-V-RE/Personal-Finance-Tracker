@@ -19,6 +19,7 @@ services:
       - "3001:3001"
     environment:
       - MONGO_URI=mongodb://mongo:27017/piggybank
+      - JWT_SECRET=mysecretkey24000
     depends_on:
       - mongo
 
