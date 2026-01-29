@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
+import { API_URL } from "../config";
 
 function SignUp() {
     const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ function SignUp() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
-        axios.post('http://localhost:3001/api/auth/signup', { email, password, name })
+        axios.post(`${API_URL}/auth/signup`, { email, password, name })
             .then(response => {
                 setLoading(false);
                 console.log(response.data);

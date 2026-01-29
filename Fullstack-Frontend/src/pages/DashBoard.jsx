@@ -7,6 +7,7 @@ import {
   Wallet, TrendingUp, TrendingDown, DollarSign, Calendar, Bell, Search, Menu, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import { API_URL } from '../config';
 
 // --- Mock Data ---
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1'];
@@ -23,7 +24,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (user && user.id) {
-      axios.get(`http://localhost:3001/api/transactions/get/${user.id}`)
+      axios.get(`${API_URL}/transactions/get/${user.id}`)
         .then(res => {
           const data = res.data;
           setTransactions(data);
@@ -47,7 +48,7 @@ const Dashboard = () => {
 
     // Check for recurring transactions lazy load
     if (user && user.id) {
-      axios.post('http://localhost:3001/api/transactions/recurring/process', { userId: user.id })
+      axios.post(`${API_URL}/transactions/recurring/process`, { userId: user.id })
         .then(res => {
           if (res.data.count > 0) {
             console.log("Processed " + res.data.count + " recurring transactions.");

@@ -8,7 +8,25 @@ const transactionRoutes = require("./routes/transactions");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+// Allowed origins for CORS to fix connection issues
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://52.45.42.182:5173",
+  "http://52.45.42.182"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true
+}));
 
 //mongoose.connect('mongodb://127.0.0.1:27017/PiggyBank')
 //const mongoURI = process.env.MONGO_URI || 'mongodb://mongo:27017/piggybank';   // when dockerize

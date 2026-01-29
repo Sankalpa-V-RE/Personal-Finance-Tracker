@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Trash2, Edit2, Plus, ArrowLeft, ArrowRight, RefreshCcw, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import { API_URL } from '../config';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -34,7 +35,7 @@ const Transactions = () => {
     }, [user]);
 
     const fetchTransactions = () => {
-        axios.get(`http://localhost:3001/api/transactions/get/${user.id}`)
+        axios.get(`${API_URL}/transactions/get/${user.id}`)
             .then(res => {
                 setTransactions(res.data);
                 setLoading(false);
@@ -43,7 +44,7 @@ const Transactions = () => {
     };
 
     const fetchRecurring = () => {
-        axios.get(`http://localhost:3001/api/transactions/recurring/get/${user.id}`)
+        axios.get(`${API_URL}/transactions/recurring/get/${user.id}`)
             .then(res => {
                 setRecurring(res.data);
             })
@@ -53,8 +54,8 @@ const Transactions = () => {
     const handleDelete = (id, isRec) => {
         if (confirm('Are you sure you want to delete this?')) {
             const endpoint = isRec
-                ? `http://localhost:3001/api/transactions/recurring/delete/${id}`
-                : `http://localhost:3001/api/transactions/delete/${id}`;
+                ? `${API_URL}/transactions/recurring/delete/${id}`
+                : `${API_URL}/transactions/delete/${id}`;
 
             axios.delete(endpoint)
                 .then(() => {
@@ -81,7 +82,7 @@ const Transactions = () => {
         e.preventDefault();
 
         if (editingId && !isRecurringMode) {
-            axios.put(`http://localhost:3001/api/transactions/update/${editingId}`, formData)
+            axios.put(`${API_URL}/transactions/update/${editingId}`, formData)
                 .then(res => {
                     setShowModal(false);
                     setFormData({ title: '', amount: '', type: 'expense', category: 'Food' });
@@ -93,8 +94,8 @@ const Transactions = () => {
         }
 
         const endpoint = isRecurringMode
-            ? 'http://localhost:3001/api/transactions/recurring/add'
-            : 'http://localhost:3001/api/transactions/add';
+            ? `${API_URL}/transactions/recurring/add`
+            : `${API_URL}/transactions/add`;
 
         axios.post(endpoint, { ...formData, userId: user.id })
             .then(res => {
