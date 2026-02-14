@@ -54,10 +54,6 @@ resource "aws_security_group" "piggybank_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # NOTE: We DO NOT open Port 27017 (MongoDB) to the public.
-  # MongoDB will talk to the Backend internally via Docker Network. 
-  # Opening it to "0.0.0.0/0" is a huge security risk!
-
   # Rule 4: Allow Outgoing Traffic (So server can download Docker/Updates)
   egress {
     from_port   = 0

@@ -42,7 +42,7 @@ const LandingPage = () => {
             Smart Finance Management
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
-            Master your money with <br />
+            Vihanga <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
               intelligent tracking
             </span>
@@ -65,11 +65,8 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Decorative background elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-100 rounded-full blur-3xl opacity-30 -z-10 animate-pulse"></div>
       </header>
-
-      {/* Features Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
