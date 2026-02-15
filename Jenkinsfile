@@ -22,13 +22,17 @@ pipeline {
         stage('Provision Infrastructure') {
             steps {
                 script {
-                    // Initialize and Apply Terraform
-                    // Assumes 'main.tf' and 'my-key.pub' are in the root or a 'terraform/' folder
-                    sh 'terraform init'
-                    sh 'terraform apply -auto-approve'
-                    
-                    // Capture the IP address Terraform created into a variable
-                    env.SERVER_IP = sh(script: "terraform output -raw server_public_ip", returnStdout: true).trim()
+                    // Tell Jenkins to enter the 'infra' folder first
+                    dir('infra') {
+                        echo "Initializing Terraform in infra/ directory..."
+                        
+                        // Initialize and Apply
+                        sh 'terraform init'
+                        sh 'terraform apply -auto-approve'
+                        
+                        // Capture the IP
+                        env.SERVER_IP = sh(script: "terraform output -raw server_public_ip", returnStdout: true).trim()
+                    }
                     
                     echo "Infrastructure Ready. Deploying to: ${env.SERVER_IP}"
                 }

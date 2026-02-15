@@ -7,3 +7,4 @@
 .terraform.lock.hcl
 
 my-key
+infra/my-key
