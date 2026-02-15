@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    # REMOVED: build: ./Fullstack-Backend
+    # We only use the image here
+    image: ${DOCKER_REGISTRY_USER:-vihangasankalpa}/${DOCKER_REPO_NAME:-piggybank}:backend-${IMAGE_TAG:-latest}
+    container_name: backend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/piggybank
+      - JWT_SECRET=mysecretkey24000
+    depends_on:
+      - mongo
+
+  frontend:
+    # REMOVED: build: ...
+    # REMOVED: command: npm run dev ... (Unless strictly necessary, the image CMD should handle this)
+    image: ${DOCKER_REGISTRY_USER:-vihangasankalpa}/${DOCKER_REPO_NAME:-piggybank}:frontend-${IMAGE_TAG:-latest}
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:5173"
+    environment:
+      # We use a variable here so Jenkins can inject the REAL Server IP
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
