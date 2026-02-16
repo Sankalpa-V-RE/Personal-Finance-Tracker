@@ -42,7 +42,7 @@ const LandingPage = () => {
             Smart Finance Management
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
-            Vihanga <br />
+            Sankalpa <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
               intelligent tracking
             </span>

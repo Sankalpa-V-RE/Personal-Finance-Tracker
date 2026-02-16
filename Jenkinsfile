@@ -3,13 +3,9 @@ pipeline {
     
     environment {
         TEST_MODE = 'false'
-        // Docker Hub Details
         DOCKER_REGISTRY_USER = "vihangasankalpa"
         DOCKER_REPO_NAME = "piggybank"
         IMAGE_TAG = "latest"
-        
-        // AWS Terraform State (Optional but good practice to keep state file)
-        // TF_IN_AUTOMATION = "true"
     }
 
     stages {
@@ -22,15 +18,11 @@ pipeline {
         stage('Provision Infrastructure') {
             steps {
                 script {
-                    // Tell Jenkins to enter the 'infra' folder first
+                    
                     dir('infra') {
                         echo "Initializing Terraform in infra/ directory..."
-                        
-                        // Initialize and Apply
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
-                        
-                        // Capture the IP
                         env.SERVER_IP = sh(script: "terraform output -raw server_public_ip", returnStdout: true).trim()
                     }
                     
@@ -42,7 +34,6 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                   // Build using local docker-compose
                    sh 'docker compose build'
                 }
             }
