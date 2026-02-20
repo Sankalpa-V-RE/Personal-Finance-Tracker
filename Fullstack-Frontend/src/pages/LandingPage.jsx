@@ -37,12 +37,8 @@ const LandingPage = () => {
       {/* Hero Section */}
       <header className="relative pt-20 pb-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-sm font-medium mb-8">
-            <span className="flex h-2 w-2 rounded-full bg-indigo-600"></span>
-            Smart Finance Management
-          </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-tight">
-            Personal <br />
+            Vihanga<br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
               intelligent tracking
             </span>

@@ -67,7 +67,7 @@ pipeline {
                             mkdir -p ~/.ssh
                             ssh-keyscan -H ${env.SERVER_IP} >> ~/.ssh/known_hosts
 
-                            # 2. Upload the PRODUCTION compose file (rename it to docker-compose.yml on destination)
+                            # 2. Upload the PRODUCTION compose file
                             scp docker-compose.prod.yml ubuntu@${env.SERVER_IP}:/home/ubuntu/docker-compose.yml
 
                             # 3. Deploy
